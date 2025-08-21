@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: microservicesdemo
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false # no need to register the server with itself
+    fetch-registry: false
+  server:
+    wait-time-in-ms-when-sync-empty: 0 # ensures your Eureka server starts quickly without hanging even if no services have registered yet
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info # Exposes the /actuator/health and /actuator/info endpoints, which Docker healthchecks can use

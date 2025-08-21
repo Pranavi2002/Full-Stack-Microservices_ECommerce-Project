@@ -1,0 +1,79 @@
+version: '3.8'  # Docker Compose file version
+
+services:
+
+  # Eureka Server – service registry
+  eureka-server:
+    build: ../microservicesdemo   # Path to the Eureka server project folder
+    container_name: eureka-server  # Name of the container
+    ports:
+      - "8761:8761"               # Map container port 8761 to host port 8761
+    networks:
+      - microservices-net         # Connect to custom network for service communication
+      
+  # User Service – manages users
+  user-service:
+    build: ../user-service
+    container_name: user-service
+    ports:
+      - "8083:8083"               # Map container port 8083 to host port 8083
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      - eureka-server           # Wait for Eureka to start
+    networks:
+      - microservices-net
+
+  # Product Service – manages products
+  product-service:
+    build: ../product-service
+    container_name: product-service
+    ports:
+      - "8081:8081"               # Map container port 8081 to host port 8081
+    environment:
+      - SPRING_PROFILES_ACTIVE=default  # Activate default Spring profile
+    depends_on:
+      - eureka-server             # Wait for Eureka to start before this service
+    networks:
+      - microservices-net
+
+  # Order Service – manages orders
+  order-service:
+    build: ../order-service
+    container_name: order-service
+    ports:
+      - "8082:8082"               # Map container port 8082 to host port 8082
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      - eureka-server
+      - product-service           # Wait for Eureka and Product Service to start
+    networks:
+      - microservices-net
+
+  # API Gateway – routes requests to other services
+  api-gateway:
+    build: ../api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"               # Map container port 8080 to host port 8080
+    depends_on:
+      - eureka-server
+      - product-service
+      - order-service
+      - user-service             # Start only after all dependent services are up
+    networks:
+      - microservices-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health || exit 1"]
+      interval: 5s
+      retries: 12
+      start_period: 10s
+    # Adds a healthcheck for Eureka using the actuator endpoint (make sure spring-boot-starter-actuator is included in Eureka server).
+    # Other services (product-service, order-service, api-gateway) will wait until Eureka is healthy before starting.
+    # This avoids the Connect to http://localhost:8761 failed errors inside Docker.
+
+# Custom network for all microservices
+networks:
+  microservices-net:
+    driver: bridge                # Bridge network allows inter-container communication

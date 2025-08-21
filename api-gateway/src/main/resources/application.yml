@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/products/**
+          filters:
+            - AddRequestHeader=X-Gateway,ProductGateway
+            - Retry=3
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/orders/**
+          filters:
+            - AddRequestHeader=X-Gateway,OrderGateway
+            - Retry=3
+        - id: order-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+          filters:
+            - AddRequestHeader=X-Gateway,OrderGateway
+            - Retry=3
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      # defaultZone: http://localhost:8761/eureka/    
+      defaultZone: http://eureka-server:8761/eureka/
+    register-with-eureka: true  # Tells your service whether it should register itself with the Eureka server. If false, the service won’t appear in the Eureka dashboard
+    fetch-registry: true # Tells your service whether it should fetch the list of other services from Eureka. If false, your service cannot discover other services via Eureka.
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
