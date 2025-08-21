@@ -110,12 +110,12 @@ docker-compose down
 
 ### ✅ Features
 
--🔑 User Service – Register, login, and manage users
--📦 Product Service – Add, update, and view products
--🛒 Order Service – Place and track orders
--🌐 API Gateway – Single entry point for frontend
--🗂️ Service Discovery – Eureka-based microservice registration
--🐳 Dockerized – Easy to deploy with Docker Compose
+- 🔑 User Service – Register, login, and manage users
+- 📦 Product Service – Add, update, and view products
+- 🛒 Order Service – Place and track orders
+- 🌐 API Gateway – Single entry point for frontend
+- 🗂️ Service Discovery – Eureka-based microservice registration
+- 🐳 Dockerized – Easy to deploy with Docker Compose
 
 ---
 
