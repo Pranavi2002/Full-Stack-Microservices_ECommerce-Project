@@ -158,12 +158,25 @@ All APIs are routed via API Gateway (http://localhost:8080)
 
 ## 📸 Screenshots
 
+### Home
 ![Home](screenshots/home.png)
+
+### Register
 ![Register](screenshots/register.png)
+
+### Login
 ![Login](screenshots/login.png)
+
+### Products
 ![Products](screenshots/products.png)
+
+### Orders
 ![Orders](screenshots/orders.png)
+
+### Error
 ![Orders Error](screenshots/errOrders.png)
+
+### View All Users
 ![View All Registered Users](screenshots/getAllUsers.png)
 
 ---
